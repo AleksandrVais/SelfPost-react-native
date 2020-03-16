@@ -1,41 +1,63 @@
-import React from "react";
-import { StyleSheet, Text, View, Image, Button, ScrollView, Alert } from "react-native";
-import { DATA } from "../data";
+import React, { useEffect, useLayoutEffect } from "react";
+import { Alert, Button, Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { useDispatch, useSelector } from "react-redux";
+import { AppHeaderIcon } from "../components/AppHeaderIcon";
+import { removePost, toggleBooked } from "../store/actions/post";
 import { THEME } from "../theme";
 
-const PostScreen = ({ navigation }) => {
-	const postId = navigation.getParam( "postId" );
-	const post = DATA.find(post => post.id === postId)
+const PostScreen = ({ route, navigation }) => {
+	const { postId, booked } = route.params;
+	const post = useSelector( state => state.post.allPosts.find( post => post.id === postId ) );
+	const iconName = booked ? "ios-star" : "ios-star-outline";
+
+	navigation.setOptions( {
+		headerTitle: `Post ${postId}`,
+		headerRight: () => <HeaderButtons HeaderButtonComponent={AppHeaderIcon} title={"Main header"}>
+			<Item title='Add to bookmarks' iconName={iconName} onPress={() => dispatch( toggleBooked( postId ) )}/>
+		</HeaderButtons>
+	} );
+
+	const isBooked = useSelector( state => state.post.bookedPosts.some( post => post.id === postId ) );
+	const dispatch = useDispatch();
+
+	useEffect( () => {navigation.setParams( { booked: isBooked } )}, [isBooked] );
 
 	const removeHandler = () => {
 		Alert.alert(
-			'Delete post',
-			'Are you sure you want to delete the post?',
+			"Delete post",
+			"Are you sure you want to delete the post?",
 			[
 				{
-					text: 'Cancel',
-					style: 'cancel',
+					text: "Cancel",
+					style: "cancel"
 				},
-				{text: 'Delete', style: 'destructive', onPress: () => console.log('OK Pressed')},
+				{
+					text: "Delete",
+					style: "destructive",
+					onPress: () => {
+						navigation.navigate( "Main" );
+						dispatch( removePost( postId ) );
+					}
+				}
 			],
-			{cancelable: false},
+			{ cancelable: false }
 		);
+	};
+
+	if(!post){
+		return null
 	}
 
 	return (
 		<ScrollView>
-			<Image style={styles.image} source={{uri: post.img }}/>
+			<Image style={styles.image} source={{ uri: post.img }}/>
 			<View style={styles.textWrap}>
 				<Text style={styles.title}>{post.text}</Text>
 				<Button title='Delete' color={THEME.DANGER_COLOR} onPress={removeHandler}/>
 			</View>
 		</ScrollView>
 	);
-};
-
-PostScreen.navigationOptions = ({ navigation }) => {
-	const postId = navigation.getParam( "postId" );
-	return { headerTitle: `Post ${postId}` };
 };
 
 const styles = StyleSheet.create( {
@@ -47,7 +69,7 @@ const styles = StyleSheet.create( {
 		padding: 10
 	},
 	title: {
-		fontFamily: 'open-regular'
+		fontFamily: "open-regular"
 	}
 } );
 

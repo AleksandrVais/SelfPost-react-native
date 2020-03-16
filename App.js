@@ -1,8 +1,9 @@
 import { AppLoading } from "expo";
 import React, { useState } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Provider } from "react-redux";
 import { bootstrap } from "./src/bootstrap";
 import { AppNavigator } from "./src/navigation/AppNavigation";
+import store from "./src/store";
 
 export default function App() {
 
@@ -11,6 +12,8 @@ export default function App() {
 	if ( !isReady ) {
 		return <AppLoading startAsync={bootstrap} onFinish={() => setIsReady( true )} onError={console.log}/>;
 	}
-	return ( <AppNavigator/> );
+	return ( <Provider store={store}>
+		<AppNavigator/>
+	</Provider> );
 }
 
