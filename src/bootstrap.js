@@ -1,8 +1,16 @@
 import * as Font from "expo-font";
+import { DB } from "./db";
 
 export const bootstrap = async () => {
-	await Font.loadAsync( {
-		"open-bold": require( "../assets/fonts/OpenSans-Bold.ttf" ),
-		"open-regular": require( "../assets/fonts/OpenSans-Regular.ttf" )
-	} );
+	try {
+		await Font.loadAsync( {
+			"open-bold": require( "../assets/fonts/OpenSans-Bold.ttf" ),
+			"open-regular": require( "../assets/fonts/OpenSans-Regular.ttf" )
+		} );
+		await DB.init();
+		console.log( "database started ..." );
+	} catch ( e ) {
+		console.log( e );
+	}
+
 };

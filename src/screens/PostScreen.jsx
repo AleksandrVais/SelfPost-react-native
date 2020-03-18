@@ -9,19 +9,19 @@ import { THEME } from "../theme";
 const PostScreen = ({ route, navigation }) => {
 	const { postId, booked } = route.params;
 	const post = useSelector( state => state.post.allPosts.find( post => post.id === postId ) );
-	const iconName = booked ? "ios-star" : "ios-star-outline";
+	const iconName = !!booked ? "ios-star" : "ios-star-outline";
 
 	navigation.setOptions( {
 		headerTitle: `Post ${postId}`,
 		headerRight: () => <HeaderButtons HeaderButtonComponent={AppHeaderIcon} title={"Main header"}>
-			<Item title='Add to bookmarks' iconName={iconName} onPress={() => dispatch( toggleBooked( postId ) )}/>
+			<Item title='Add to bookmarks' iconName={iconName} onPress={() => dispatch( toggleBooked( post ) )}/>
 		</HeaderButtons>
 	} );
 
 	const isBooked = useSelector( state => state.post.bookedPosts.some( post => post.id === postId ) );
 	const dispatch = useDispatch();
 
-	useEffect( () => {navigation.setParams( { booked: isBooked } )}, [isBooked] );
+	useEffect( () => {if(post){navigation.setParams( { booked: isBooked } )}}, [isBooked] );
 
 	const removeHandler = () => {
 		Alert.alert(

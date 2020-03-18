@@ -88,7 +88,7 @@ const AboutNavigator = () => {
 };
 const CreateNavigator = () => {
 	return <Stack.Navigator screenOptions={navigatorOptions}>
-		<Stack.Screen name='Create' component={CreateScreen}/>
+		<Stack.Screen name='Create Post' component={CreateScreen}/>
 	</Stack.Navigator>;
 };
 
@@ -110,7 +110,7 @@ export const AppNavigator = () => {
 	return (
 		<NavigationContainer>
 			<Drawer.Navigator drawerContentOptions={navigatorOptions()}>
-				<Drawer.Screen name='MainScreen' component={MainTabNavigator}/>
+				<Drawer.Screen name='Main' component={MainTabNavigator}/>
 				<Drawer.Screen name='About' component={AboutNavigator}/>
 				<Drawer.Screen name='Create' component={CreateNavigator}/>
 			</Drawer.Navigator>
